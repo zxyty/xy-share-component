@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FunctionComponent } from 'react';
 
 import { LoadedCssStyle, cssLoader } from './CssLoader';
 
@@ -66,13 +66,15 @@ const useRemoteComponent = createUseRemoteComponent();
 export function useShareComponent<T extends Record<string, any>>(
   url: string,
   fallback: React.ReactNode = null,
-  usestatic = '',
-) {
-  return function ShareComponent(props: T & Readonly<{ children?: React.ReactNode }>) {
+  useStatic = '',
+) : FunctionComponent<T & { children: React.ReactNode }> {
+  return function ShareComponent(
+    props: any = {},
+  ): React.ReactElement<any, any> {
     const [loading, err, Component] = useRemoteComponent(url)!;
 
     if (loading) {
-      return fallback;
+      return <React.Fragment>{fallback}</React.Fragment>;
     }
 
     if (err || !Component) {
@@ -80,8 +82,8 @@ export function useShareComponent<T extends Record<string, any>>(
     }
 
     // 如果是使用的静态类组件
-    if (usestatic && Component[usestatic]) {
-      const StaticComponent = Component[usestatic];
+    if (useStatic && Component[useStatic]) {
+      const StaticComponent = Component[useStatic];
       return <StaticComponent {...props} />;
     }
 
