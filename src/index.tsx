@@ -63,27 +63,28 @@ export const createUseRemoteComponent = () => {
 
 const useRemoteComponent = createUseRemoteComponent();
 
-export const ShareComponent = (config: any) => {
-  const { url, fallback = null, use = null, children, props = {} } = config;
-  const [loading, err, Component] = useRemoteComponent(url)!;
+export function useShareComponent<T extends Record<string, any>>(
+  url: string,
+  fallback: React.ReactNode = null,
+  usestatic = '',
+) {
+  return function ShareComponent(props: T) {
+    const [loading, err, Component] = useRemoteComponent(url)!;
 
-  if (loading) {
-    return fallback;
-  }
+    if (loading) {
+      return fallback;
+    }
 
-  if (err || !Component) {
-    return <div>Unknown Error: {(err || 'UNKNOWN').toString()}</div>;
-  }
+    if (err || !Component) {
+      return <div>Unknown Error: {(err || 'UNKNOWN').toString()}</div>;
+    }
 
-  if (children) {
-    props.children = children;
-  }
+    // 如果是使用的静态类组件
+    if (usestatic && Component[usestatic]) {
+      const StaticComponent = Component[usestatic];
+      return <StaticComponent {...props} />;
+    }
 
-  // 如果是使用的静态类组件
-  if (use && Component[use]) {
-    const StaticComponent = Component[use];
-    return <StaticComponent {...props} />;
-  }
-
-  return <Component {...props} />;
-};
+    return <Component {...props} />;
+  };
+}
