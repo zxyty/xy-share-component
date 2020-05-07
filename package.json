@@ -1,6 +1,6 @@
 {
     "name": "xy-share-component",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "main": "lib/index.js",
     "license": "MIT",
     "scripts": {
@@ -9,9 +9,10 @@
     "author": "zxy",
     "description": "Use remote url's component, such as cloud component",
     "keywords": [
-        "remote component",
         "share component",
-        "cloud component"
+        "remote component",
+        "cloud component",
+        "systemjs"
     ],
     "repository": {
         "type": "git",

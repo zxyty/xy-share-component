@@ -10,7 +10,7 @@ interface StatePropsType {
 
 const LoadedComponents = {};
 
-export const createUseRemoteComponent = () => {
+const createUseRemoteComponent = () => {
   const remoteLoader = window._xyShareComponentLoader;
   const useRemoteComponent = target => {
     const scriptTxt = document.querySelector('#remote-components-map')
@@ -68,7 +68,7 @@ export function useShareComponent<T extends Record<string, any>>(
   fallback: React.ReactNode = null,
   usestatic = '',
 ) {
-  return function ShareComponent(props: T) {
+  return function ShareComponent(props: T & Readonly<{ children?: React.ReactNode }>) {
     const [loading, err, Component] = useRemoteComponent(url)!;
 
     if (loading) {
