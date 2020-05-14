@@ -35,6 +35,7 @@ import { useShareComponent } from "xy-share-component";
   </script>
 	<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
   <script src='https://unpkg.com/systemjs@6.3.1/dist/system.js'></script>
 	<script src='https://unpkg.com/systemjs@6.3.1/dist/extras/amd.js'></script>
 	<script src='https://unpkg.com/systemjs@6.3.1/dist/extras/named-exports.js'></script>
