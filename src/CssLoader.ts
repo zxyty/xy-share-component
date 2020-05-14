@@ -8,7 +8,7 @@ export const cssLoader = (sUrl: string, id?: string, fCallback?: Function) => {
   node.setAttribute('type', 'text/css');
   node.setAttribute('rel', 'stylesheet');
   node.setAttribute('href', sUrl);
-  node.setAttribute('id', id || 'THEME_CHANGER');
+  node.setAttribute('id', id || 'CLOUD_COMPONENT_CHANGER');
   window.document.getElementsByTagName('head')[0].appendChild(node);
 
   LoadedCssStyle[sUrl] = 'loading';

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FunctionComponent } from 'react';
+import VueMountComponent from './VueComponent';
 
 import { LoadedCssStyle, cssLoader } from './CssLoader';
 
@@ -10,7 +11,7 @@ interface StatePropsType {
 
 const LoadedComponents = {};
 
-const createUseRemoteComponent = () => {
+export const createUseRemoteComponent = () => {
   const remoteLoader = window._xyShareComponentLoader;
   const useRemoteComponent = target => {
     const scriptTxt = document.querySelector('#remote-components-map')
@@ -23,15 +24,17 @@ const createUseRemoteComponent = () => {
     }
 
     // load target css/style
+    let $name;
     const styleUrl = realUrl.replace(
       new RegExp(`${target}/([\\s\\S]*?)\.js`),
       (_, $1) => {
+        $name = $1;
         return `${target}/${$1}.css`;
       },
     );
 
     if (!LoadedCssStyle[styleUrl]) {
-      cssLoader(styleUrl);
+      cssLoader(styleUrl, `${target}_${$name || ''}`);
     }
 
     const [{ loading, err, Component }, setState] = useState<StatePropsType>({
@@ -49,7 +52,7 @@ const createUseRemoteComponent = () => {
         .then(module => {
           setState({ loading: false, Component: module.default });
           LoadedComponents[target] = new Promise(res => {
-            res(module)
+            res(module);
           });
         })
         .catch(e => setState({ loading: false, err: e }));
@@ -66,8 +69,8 @@ const useRemoteComponent = createUseRemoteComponent();
 export function useShareComponent<T extends Record<string, any>>(
   url: string,
   fallback: React.ReactNode = null,
-  useStatic = '',
-) : FunctionComponent<T & { children: React.ReactNode }> {
+  usestatic = '',
+): FunctionComponent<T & { children?: React.ReactNode }> {
   return function ShareComponent(
     props: any = {},
   ): React.ReactElement<any, any> {
@@ -82,9 +85,14 @@ export function useShareComponent<T extends Record<string, any>>(
     }
 
     // 如果是使用的静态类组件
-    if (useStatic && Component[useStatic]) {
-      const StaticComponent = Component[useStatic];
+    if (usestatic && Component[usestatic]) {
+      const StaticComponent = Component[usestatic];
       return <StaticComponent {...props} />;
+    }
+
+    if ('_compiled' in Component && Component._compiled) {
+      // should be vue
+      return <VueMountComponent {...props} definition={Component} />;
     }
 
     return <Component {...props} />;
